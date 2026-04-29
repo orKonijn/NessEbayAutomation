@@ -18,6 +18,18 @@ python -m playwright install chromium
 pytest
 ```
 
+Run headed mode (non-headless):
+
+```bash
+pytest --headed
+```
+
+Or configure via env var:
+
+```bash
+HEADLESS=false pytest
+```
+
 ## 3) Generate Allure report
 
 ```bash
@@ -43,5 +55,3 @@ allure serve allure-results
 - Override with environment variable:
 
 ```bash
-BASE_URL=https://www.ebay.com pytest
-```
