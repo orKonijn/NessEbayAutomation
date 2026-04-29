@@ -1,0 +1,1 @@
+"""eBay Playwright automation package."""
