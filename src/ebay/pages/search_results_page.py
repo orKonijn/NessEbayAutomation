@@ -18,7 +18,9 @@ class SearchResultsPage(BasePage):
     @allure.step("Verify search results loaded for: {term}")
     def assert_loaded_for(self, term: str) -> "SearchResultsPage":
         encoded_main_word = re.escape(term.split()[0])
-        expect(self.page).to_have_url(re.compile(r".*_nkw=.*", re.IGNORECASE), timeout=15_000)
+        expect(self.page).to_have_url(
+            re.compile(r".*_nkw=.*", re.IGNORECASE), timeout=15_000
+        )
         expect(self.page.locator("body")).to_contain_text(
             re.compile(encoded_main_word, re.IGNORECASE),
             timeout=15_000,

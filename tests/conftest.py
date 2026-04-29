@@ -1,19 +1,9 @@
-import os
 from typing import Any, Generator
 
 import pytest
 from playwright.sync_api import Browser, BrowserType, Page, Playwright, sync_playwright
 
 from playwright_config import PlaywrightConfig
-
-
-def pytest_addoption(parser: pytest.Parser) -> None:
-    parser.addoption(
-        "--headed",
-        action="store_true",
-        default=False,
-        help="Run browser in headed mode (overrides HEADLESS env variable).",
-    )
 
 
 @pytest.fixture(scope="session")
@@ -40,7 +30,9 @@ def playwright() -> Generator[Playwright, Any, None]:
 
 
 @pytest.fixture(scope="session")
-def browser(playwright: Playwright, config: PlaywrightConfig) -> Generator[Browser, Any, None]:
+def browser(
+    playwright: Playwright, config: PlaywrightConfig
+) -> Generator[Browser, Any, None]:
     browser_type: BrowserType = getattr(playwright, config.browser_name)
     browser = browser_type.launch(headless=config.headless)
     yield browser

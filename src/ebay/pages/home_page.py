@@ -20,7 +20,9 @@ class HomePage(BasePage):
     @allure.step("Open eBay home page")
     def open(self) -> "HomePage":
         self.page.goto("/", wait_until="domcontentloaded")
-        expect(self.page).to_have_title(re.compile("eBay", re.IGNORECASE), timeout=15_000)
+        expect(self.page).to_have_title(
+            re.compile("eBay", re.IGNORECASE), timeout=15_000
+        )
         return self
 
     @allure.step("Verify search is ready")
@@ -35,3 +37,7 @@ class HomePage(BasePage):
         self.search_input.fill(term)
         self.search_input.press("Enter")
         return SearchResultsPage(self.page)
+
+    @allure.step("Click Ebay login page")
+    def login(self) -> None:
+        self.page.goto("/", wait_until="domcontentloaded")

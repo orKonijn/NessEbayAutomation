@@ -8,7 +8,6 @@ class PlaywrightConfig:
     browser_name: str
     headless: bool
 
-
     @staticmethod
     def from_env() -> "PlaywrightConfig":
         headless_env = os.getenv("HEADLESS", "true").strip().lower()

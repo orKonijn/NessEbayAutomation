@@ -11,10 +11,7 @@ def test_search_lists_products(page) -> None:
     home = HomePage(page).open().assert_search_is_ready()
     results = home.search_for(search_term)
 
-    (
-        results.assert_loaded_for(search_term)
-        .assert_has_visible_results()
-    )
+    (results.assert_loaded_for(search_term).assert_has_visible_results())
 
     with allure.step("Attach first visible result title"):
         allure.attach(
