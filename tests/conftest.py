@@ -7,9 +7,9 @@ from playwright_config import PlaywrightConfig
 
 
 @pytest.fixture(scope="session")
-def config(config: pytest.Config) -> PlaywrightConfig:
+def app_config(pytestconfig: pytest.Config) -> PlaywrightConfig:
     settings = PlaywrightConfig.from_env()
-    if config.getoption("headed"):
+    if pytestconfig.getoption("headed"):
         return PlaywrightConfig(
             base_url=settings.base_url,
             browser_name=settings.browser_name,
@@ -19,8 +19,8 @@ def config(config: pytest.Config) -> PlaywrightConfig:
 
 
 @pytest.fixture(scope="session")
-def base_url(config: PlaywrightConfig) -> str:
-    return config.base_url
+def base_url(app_config: PlaywrightConfig) -> str:
+    return app_config.base_url
 
 
 @pytest.fixture(scope="session")
@@ -31,10 +31,10 @@ def playwright() -> Generator[Playwright, Any, None]:
 
 @pytest.fixture(scope="session")
 def browser(
-    playwright: Playwright, config: PlaywrightConfig
+    playwright: Playwright, app_config: PlaywrightConfig
 ) -> Generator[Browser, Any, None]:
-    browser_type: BrowserType = getattr(playwright, config.browser_name)
-    browser = browser_type.launch(headless=config.headless)
+    browser_type: BrowserType = getattr(playwright, app_config.browser_name)
+    browser = browser_type.launch(headless=app_config.headless)
     yield browser
     browser.close()
 
