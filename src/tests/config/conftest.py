@@ -1,20 +1,27 @@
+from pathlib import Path
 from typing import Any, Generator
 
 import pytest
+from dotenv import load_dotenv
 from playwright.sync_api import Browser, BrowserType, Page, Playwright, sync_playwright
 
 from playwright_config import PlaywrightConfig
+
+ROOT_DIR = Path(__file__).resolve().parent
+load_dotenv(ROOT_DIR / ".env")
 
 
 @pytest.fixture(scope="session")
 def app_config(pytestconfig: pytest.Config) -> PlaywrightConfig:
     settings = PlaywrightConfig.from_env()
+
     if pytestconfig.getoption("headed"):
         return PlaywrightConfig(
             base_url=settings.base_url,
             browser_name=settings.browser_name,
             headless=False,
         )
+
     return settings
 
 
@@ -35,7 +42,9 @@ def browser(
 ) -> Generator[Browser, Any, None]:
     browser_type: BrowserType = getattr(playwright, app_config.browser_name)
     browser = browser_type.launch(headless=app_config.headless)
+
     yield browser
+
     browser.close()
 
 
@@ -43,5 +52,7 @@ def browser(
 def page(browser: Browser, base_url: str) -> Generator[Page, Any, None]:
     context = browser.new_context(base_url=base_url)
     page = context.new_page()
+
     yield page
+
     context.close()
