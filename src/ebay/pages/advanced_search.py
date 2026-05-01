@@ -1,20 +1,10 @@
 import re
-from typing import Optional
 
 import allure
 from playwright.sync_api import Page, expect
 
 from ebay.pages.header_page import HeaderPage
-
-
-def extract_item_url(result_item) -> Optional[str]:
-    item_link = result_item.locator(
-        "xpath=.//a[contains(@class,'s-item__link') and starts-with(@href,'http')]"
-    ).first
-    href = item_link.get_attribute("href")
-    if not href or "ebay.com/itm/" not in href:
-        return None
-    return href
+from ebay.utils.extract import extract_item_price, extract_item_url
 
 
 class AdvancedSearch:
@@ -101,8 +91,8 @@ class AdvancedSearch:
             if not item_url or item_url in matches:
                 continue
 
-            item_price = extract_item_url(card)
-            if item_price is None or item_price > str(max_price):
+            item_price = extract_item_price(card)
+            if item_price is None or item_price > max_price:
                 continue
 
             matches.append(item_url)
