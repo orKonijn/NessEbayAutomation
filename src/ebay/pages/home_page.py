@@ -1,10 +1,6 @@
-import re
-
-import allure
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 
 from ebay.pages.base_page import BasePage
-from ebay.pages.search_results_page import SearchResultsPage
 from ebay.pages.header_page import HeaderPage
 
 
@@ -13,10 +9,3 @@ class HomePage(BasePage, HeaderPage):
 
     def __init__(self, page: Page) -> None:
         super().__init__(page)
-
-    @allure.step("Open eBay home page")
-    def open(self) -> "HomePage":
-        self.page.goto("https://sandbox.ebay.com/", wait_until="domcontentloaded")
-        expect(self.page).to_have_url("https://sandbox.ebay.com/")
-        expect(self.page).to_have_title(re.compile("eBay", re.IGNORECASE))
-        return self
