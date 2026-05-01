@@ -1,25 +1,25 @@
 import re
 import os
+from pathlib import Path
 
 import allure
 from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
-from ebay.pages.search_results_page import SearchResultsPage
-
 
 class HeaderPage:
 
     def __init__(self, page: Page) -> None:
-        load_dotenv()
+        repo_root = Path(__file__).resolve().parents[3]
+        load_dotenv(repo_root / ".env")
         self.page = page
 
     @allure.step("Login with email")
     def login(self, email: str | None = None) -> None:
 
-        if email is None:
+        if email is None or email.strip() == "":
             email = os.getenv("EBAY_EMAIL")
-        if email is None:
+        if not email:
             raise ValueError("EBAY_EMAIL is missing. Add it to your .env file.")
 
         self._click_sign_in()

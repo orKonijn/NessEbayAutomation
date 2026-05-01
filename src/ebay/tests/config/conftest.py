@@ -7,8 +7,8 @@ from playwright.sync_api import Browser, BrowserType, Page, Playwright, sync_pla
 
 from playwright_config import PlaywrightConfig
 
-ROOT_DIR = Path(__file__).resolve().parent
-load_dotenv(ROOT_DIR / ".env")
+REPO_ROOT = Path(__file__).resolve().parents[3]
+load_dotenv(REPO_ROOT / ".env")
 
 
 @pytest.fixture(scope="session")
