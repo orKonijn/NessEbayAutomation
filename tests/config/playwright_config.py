@@ -14,7 +14,7 @@ class PlaywrightConfig:
         headless = headless_env not in {"0", "false", "no", "off"}
 
         return PlaywrightConfig(
-            base_url=os.getenv("BASE_URL", "https://www.ebay.com"),
+            base_url=os.getenv("BASE_URL", "https://sandbox.ebay.com/"),
             browser_name=os.getenv("BROWSER", "chromium"),
             headless=headless,
         )

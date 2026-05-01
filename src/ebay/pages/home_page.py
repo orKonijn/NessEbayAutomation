@@ -16,7 +16,7 @@ class HomePage(BasePage, HeaderPage):
 
     @allure.step("Open eBay home page")
     def open(self) -> "HomePage":
-        self.page.goto("https://www.ebay.com/", wait_until="domcontentloaded")
-        expect(self.page).to_have_url("https://www.ebay.com/")
+        self.page.goto("https://sandbox.ebay.com/", wait_until="domcontentloaded")
+        expect(self.page).to_have_url("https://sandbox.ebay.com/")
         expect(self.page).to_have_title(re.compile("eBay", re.IGNORECASE))
         return self

@@ -11,4 +11,4 @@ def test_search_lists_products(page) -> None:
     search_term = "wireless mouse"
 
     home = HomePage(page).open()
-    home.login()
+    home.login("EbayTestingAutomation@protonmail.com", "TestingAutomation1!")
