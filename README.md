@@ -45,8 +45,11 @@ allure serve allure-results
 
 ## 4) Project layout
 
-- `src/ebay/pages/`: Page Objects
-- `tests/`: Test cases and fixtures
+- `src/ebay/pages/`: Page Objects only (application interaction layer)
+- `tests/`: All test code and test support
+  - `tests/test_ebay.py`: End-to-end tests
+  - `tests/conftest.py`: Shared pytest fixtures
+  - `tests/config/playwright_config.py`: Runtime config from environment
 - `pyproject.toml`: Python dependencies and packaging config
 
 ## Notes

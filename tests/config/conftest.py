@@ -5,9 +5,9 @@ import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import Browser, BrowserType, Page, Playwright, sync_playwright
 
-from playwright_config import PlaywrightConfig
+from tests.config.playwright_config import PlaywrightConfig
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(REPO_ROOT / ".env")
 
 
