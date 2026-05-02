@@ -1,0 +1,6 @@
+Index: 2
+URL: https://www.ebay.com/itm/406874175758
+Success: False
+Selected options: ['select:Health & Beauty']
+Error: None
+Screenshot: artifacts\screenshots\add-to-cart-item-2-failed.png

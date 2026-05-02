@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","7799","Search returns product URLs","tests","2026-05-02","passed","2026-05-02","","test_ebay","",""
+"","36171","Add selected items to cart and verify total","tests","2026-05-02","passed","2026-05-02","","test_ebay","",""
+"","23611","Login with eBay account","tests","2026-05-02","passed","2026-05-02","","test_ebay","",""

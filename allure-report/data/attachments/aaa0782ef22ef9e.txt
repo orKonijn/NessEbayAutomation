@@ -1,0 +1,6 @@
+Index: 1
+URL: https://www.ebay.com/itm/305921508775
+Success: False
+Selected options: ['select:Crafts']
+Error: None
+Screenshot: artifacts\screenshots\add-to-cart-item-1-failed.png
