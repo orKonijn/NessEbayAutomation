@@ -4,6 +4,7 @@ from pathlib import Path
 
 from playwright.sync_api import Error, Page, expect
 
+from ebay.utils.allure_attachments import save_page_screenshot
 from ebay.utils.price_parser import parse_price
 
 logger = logging.getLogger(__name__)
@@ -87,9 +88,9 @@ class CartPage:
         self, path: str = "artifacts/screenshots/cart-total-check.png"
     ) -> Path:
         screenshot_path = Path(path)
-        screenshot_path.parent.mkdir(parents=True, exist_ok=True)
-        self.page.screenshot(path=str(screenshot_path), full_page=True)
-
-        logger.info("Saved cart screenshot: %s", screenshot_path)
-
+        save_page_screenshot(
+            self.page,
+            screenshot_path,
+            name="Cart total check",
+        )
         return screenshot_path
