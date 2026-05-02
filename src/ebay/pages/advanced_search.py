@@ -57,7 +57,6 @@ class AdvancedSearch:
             )
             if len(matches) >= limit or not self._go_to_next_results_page(visited_urls):
                 break
-        print(matches)
         return matches
 
     def _collect_matches_from_page(
