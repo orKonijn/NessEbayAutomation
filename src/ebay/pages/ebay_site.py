@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 
 import allure
@@ -24,10 +25,11 @@ class EbaySite(BasePage):
         self.cart_page = CartPage(page)
 
     @allure.step("Open eBay home page")
-    def open(self, url: str = "https://www.ebay.com/") -> "EbaySite":
-        logger.info("Opening eBay home page | url=%s", url)
+    def open(self, url: str | None = None) -> "EbaySite":
+        target_url = url or os.getenv("BASE_URL", "https://www.ebay.com/")
+        logger.info("Opening eBay home page | url=%s", target_url)
 
-        self.page.goto(url, wait_until="domcontentloaded")
+        self.page.goto(target_url, wait_until="domcontentloaded")
 
         expect(self.page).to_have_url(re.compile(r"ebay\.com", re.IGNORECASE))
         expect(self.page).to_have_title(re.compile(r"eBay", re.IGNORECASE))
