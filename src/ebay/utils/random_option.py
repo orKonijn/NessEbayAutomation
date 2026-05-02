@@ -1,5 +1,5 @@
-import random
 import logging
+import random
 
 from playwright.sync_api import Locator
 

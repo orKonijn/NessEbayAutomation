@@ -1,0 +1,12 @@
+[32mINFO    [0m ebay.pages.ebay_site:ebay_site.py:30 Opening eBay home page | url=https://www.ebay.com
+[32mINFO    [0m ebay.pages.ebay_site:ebay_site.py:37 eBay home page opened successfully | current_url=https://www.ebay.com/ | title=Electronics, Cars, Fashion, Collectibles & More | eBay
+[32mINFO    [0m ebay.pages.item_page:item_page.py:38 Adding 2 items to cart
+[32mINFO    [0m ebay.pages.item_page:item_page.py:48 Processing item 1: https://www.ebay.com/itm/305921508775
+[32mINFO    [0m ebay.utils.random_option:random_option.py:58 Selected dropdown option | label=Crafts | value=14339
+[32mINFO    [0m ebay.utils.allure_attachments:allure_attachments.py:34 Saved screenshot: artifacts\screenshots\add-to-cart-item-1-failed.png
+[32mINFO    [0m ebay.pages.item_page:item_page.py:48 Processing item 2: https://www.ebay.com/itm/406874175758
+[32mINFO    [0m ebay.utils.random_option:random_option.py:58 Selected dropdown option | label=Health & Beauty | value=26395
+[32mINFO    [0m ebay.utils.allure_attachments:allure_attachments.py:34 Saved screenshot: artifacts\screenshots\add-to-cart-item-2-failed.png
+[32mINFO    [0m ebay.utils.allure_attachments:allure_attachments.py:34 Saved screenshot: artifacts\screenshots\cart-total-check.png
+[32mINFO    [0m ebay.pages.cart_page:cart_page.py:77 Found cart subtotal text: ILS 1,530.45
+[32mINFO    [0m ebay.pages.cart_page:cart_page.py:29 Cart total check | actual=1530.45 | max_allowed=2000.00 | budget_per_item=1000.00 | items_count=2 | screenshot=artifacts\screenshots\cart-total-check.png

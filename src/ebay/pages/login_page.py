@@ -7,6 +7,8 @@ import allure
 from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
+from ebay.utils.allure_attachments import save_page_screenshot
+
 logger = logging.getLogger(__name__)
 
 
@@ -43,12 +45,10 @@ class LoginPage:
             self.page.get_by_test_id("pass").fill(password)
             self.page.get_by_test_id("sgnBt").click()
         except Exception:
-            screenshot_path = self.screenshot_dir / "login-failure.png"
-            self.page.screenshot(path=str(screenshot_path), full_page=True)
-            allure.attach.file(
-                str(screenshot_path),
+            save_page_screenshot(
+                self.page,
+                self.screenshot_dir / "login-failure.png",
                 name="Login failure screenshot",
-                attachment_type=allure.attachment_type.PNG,
             )
             raise
 

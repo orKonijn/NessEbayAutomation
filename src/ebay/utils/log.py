@@ -4,7 +4,7 @@ def log_item_result(
     selected_variants: list[str],
     success: bool,
     error_message: str | None,
-    screenshot_path: str,
+    screenshot_path: str | None,
 ) -> None:
     print(
         "[add_items_to_cart] "

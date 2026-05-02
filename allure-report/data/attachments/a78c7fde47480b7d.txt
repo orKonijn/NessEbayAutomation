@@ -1,0 +1,3 @@
+[32mINFO    [0m ebay.pages.ebay_site:ebay_site.py:30 Opening eBay home page | url=https://www.ebay.com
+[32mINFO    [0m ebay.pages.ebay_site:ebay_site.py:37 eBay home page opened successfully | current_url=https://www.ebay.com/ | title=Electronics, Cars, Fashion, Collectibles & More | eBay
+[32mINFO    [0m ebay.pages.login_page:login_page.py:37 Logging in as Eb***@protonmail.com

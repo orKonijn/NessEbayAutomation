@@ -6,10 +6,11 @@ import allure
 from playwright.sync_api import (
     Error,
     Page,
-    TimeoutError as PlaywrightTimeoutError,
     expect,
 )
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
+from ebay.utils.allure_attachments import save_page_screenshot
 from ebay.utils.attach_summery import attach_summary
 from ebay.utils.log import log_item_result
 from ebay.utils.random_option import (
@@ -155,9 +156,8 @@ class ItemPage:
         status = "success" if success else "failed"
         path = self.screenshot_dir / f"add-to-cart-item-{index}-{status}.png"
 
-        try:
-            self.page.screenshot(path=str(path), full_page=True)
-            return str(path)
-        except Error as exc:
-            logger.warning("Could not save screenshot for item %d: %s", index, exc)
-            return None
+        return save_page_screenshot(
+            self.page,
+            path,
+            name=f"Item {index} add-to-cart {status}",
+        )
