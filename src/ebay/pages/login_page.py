@@ -52,6 +52,10 @@ class LoginPage:
             )
             raise
 
+        expect(
+            self.page.get_by_role("link", name=re.compile(r"^Sign in$", re.IGNORECASE))
+        ).not_to_be_visible(timeout=15_000)
+
     def _resolve_credentials(
         self,
         email: str | None,
