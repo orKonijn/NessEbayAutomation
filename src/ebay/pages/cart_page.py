@@ -19,11 +19,14 @@ class CartPage:
         budget_per_item: float,
         items_count: int,
     ) -> None:
+        self.page.pause()
         self._open_cart()
         self.save_cart_screenshot()
 
         cart_total = self.get_cart_total()
         max_allowed_total = budget_per_item * items_count
+
+        print(f"Cart total: {cart_total:.2f}; ")
 
         assert cart_total <= max_allowed_total, (
             "Cart total exceeds allowed maximum. "
@@ -54,38 +57,27 @@ class CartPage:
             raise RuntimeError(f"Failed to load eBay cart page: {exc}") from exc
 
     def get_cart_total(self) -> float:
-        preferred_patterns = [
-            r"item\s*subtotal",
-            r"subtotal",
-            r"order\s*total",
-            r"total",
-        ]
+        subtotal_locators = (
+            self.page.locator("[data-test-id='SUBTOTAL']").first,
+            self.page.locator(
+                ".cart-summary-line-item [data-test-id='SUBTOTAL']"
+            ).first,
+            self.page.locator(".val-col.total-row[data-test-id='SUBTOTAL']").first,
+        )
 
-        for pattern in preferred_patterns:
-            labeled_value = self._value_near_label(pattern)
-            if labeled_value is not None:
-                return labeled_value
-
-        text_patterns = [
-            r"item\s*subtotal[^\d$]*([\w\s$,.]+)",
-            r"subtotal[^\d$]*([\w\s$,.]+)",
-            r"order\s*total[^\d$]*([\w\s$,.]+)",
-            r"total[^\d$]*([\w\s$,.]+)",
-        ]
-
-        body_text = self.page.locator("body").inner_text()
-        for pattern in text_patterns:
-            match = re.search(pattern, body_text, flags=re.IGNORECASE)
-            if not match:
+        for subtotal_value in subtotal_locators:
+            if subtotal_value.count() == 0 or not subtotal_value.is_visible():
                 continue
 
-            parsed = parse_price(match.group(0))
-            if parsed is not None:
-                return parsed
+        parsed_subtotal = parse_price(subtotal_value.inner_text(timeout=1_000))
+        if parsed_subtotal is not None:
+            return parsed_subtotal
 
         raise RuntimeError(
-            "Could not find cart subtotal/total on the cart page. "
-            "Looked for labels: Subtotal, Item subtotal, Total, Order total."
+            "Could not find cart subtotal on the cart page. "
+            "Looked for selectors: [data-test-id='SUBTOTAL'], "
+            ".cart-summary-line-item [data-test-id='SUBTOTAL'], "
+            ".val-col.total-row[data-test-id='SUBTOTAL']."
         )
 
     def _value_near_label(self, label_pattern: str) -> float | None:

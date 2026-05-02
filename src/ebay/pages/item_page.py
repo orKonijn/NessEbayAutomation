@@ -167,17 +167,22 @@ class ItemPage:
         except PlaywrightTimeoutError:
             pass
 
-        confirmation = self.page.locator(
-            "text=/added to (your )?(cart|basket)/i, "
-            "[role='dialog'], "
-            "[aria-live='polite']"
-        ).first
+        confirmation_candidates = (
+            self.page.get_by_text(
+                re.compile(r"added to (your )?(cart|basket)", re.IGNORECASE)
+            ),
+            self.page.locator("[role='dialog']"),
+            self.page.locator("[aria-live='polite']"),
+        )
 
-        try:
-            expect(confirmation).to_be_visible(timeout=8_000)
-            return True
-        except Error:
-            return False
+        for confirmation in confirmation_candidates:
+            try:
+                expect(confirmation.first).to_be_visible(timeout=8_000)
+                return True
+            except Error:
+                continue
+
+        return False
 
     def _save_screenshot(self, index: int, success: bool) -> str:
         status = "success" if success else "failed"
