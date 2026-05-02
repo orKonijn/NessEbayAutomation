@@ -1,60 +1,63 @@
+import logging
 import re
 from pathlib import Path
 
-from playwright.sync_api import Error, Locator, Page, expect
+from playwright.sync_api import Error, Page, expect
 
 from ebay.utils.price_parser import parse_price
 
+logger = logging.getLogger(__name__)
+
 
 class CartPage:
-    """eBay cart page interactions and assertions."""
-
     def __init__(self, page: Page) -> None:
         self.page = page
         self.screenshot_dir = Path("artifacts/screenshots")
         self.screenshot_dir.mkdir(parents=True, exist_ok=True)
 
     def assert_cart_total_not_exceeds(
-        self,
-        budget_per_item: float,
-        items_count: int,
+        self, budget_per_item: float, items_count: int
     ) -> None:
-        self.page.pause()
         self._open_cart()
-        self.save_cart_screenshot()
+
+        screenshot_path = self.save_cart_screenshot()
 
         cart_total = self.get_cart_total()
         max_allowed_total = budget_per_item * items_count
 
-        print(f"Cart total: {cart_total:.2f}; ")
+        logger.info(
+            "Cart total check | actual=%.2f | max_allowed=%.2f | "
+            "budget_per_item=%.2f | items_count=%d | screenshot=%s",
+            cart_total,
+            max_allowed_total,
+            budget_per_item,
+            items_count,
+            screenshot_path,
+        )
 
         assert cart_total <= max_allowed_total, (
             "Cart total exceeds allowed maximum. "
-            f"Actual cart total: {cart_total:.2f}; "
-            f"Expected max total: {max_allowed_total:.2f}; "
-            f"Budget per item: {budget_per_item:.2f}; "
-            f"Item count: {items_count}."
+            f"Actual: {cart_total:.2f}; Max allowed: {max_allowed_total:.2f}; "
+            f"Budget/item: {budget_per_item:.2f}; Item count: {items_count}."
         )
 
     def _open_cart(self) -> None:
         try:
-            if re.search(r"cart|viCart", self.page.url, re.IGNORECASE):
-                self.page.wait_for_load_state("domcontentloaded")
-            else:
+            if not re.search(r"cart|viCart", self.page.url, re.IGNORECASE):
                 self.page.goto("https://cart.ebay.com/", wait_until="domcontentloaded")
 
             if not re.search(r"cart|viCart", self.page.url, re.IGNORECASE):
-                cart_button = self.page.get_by_role(
+                cart_link = self.page.get_by_role(
                     "link", name=re.compile(r"cart", re.IGNORECASE)
                 )
-                if cart_button.count() > 0:
-                    cart_button.first.click()
-                    self.page.wait_for_load_state("domcontentloaded")
+                expect(cart_link.first).to_be_visible(timeout=10_000)
+                cart_link.first.click()
 
             expect(self.page).to_have_url(re.compile(r"cart|viCart", re.IGNORECASE))
             expect(self.page.locator("body")).to_be_visible(timeout=15_000)
+
         except Error as exc:
-            raise RuntimeError(f"Failed to load eBay cart page: {exc}") from exc
+            raise RuntimeError(f"Failed to load cart page: {exc}") from exc
 
     def get_cart_total(self) -> float:
         subtotal_locators = (
@@ -65,50 +68,28 @@ class CartPage:
             self.page.locator(".val-col.total-row[data-test-id='SUBTOTAL']").first,
         )
 
-        for subtotal_value in subtotal_locators:
-            if subtotal_value.count() == 0 or not subtotal_value.is_visible():
+        for locator in subtotal_locators:
+            if locator.count() == 0 or not locator.is_visible():
                 continue
 
-        parsed_subtotal = parse_price(subtotal_value.inner_text(timeout=1_000))
-        if parsed_subtotal is not None:
-            return parsed_subtotal
+            subtotal_text = locator.inner_text(timeout=1_000)
+            logger.info("Found cart subtotal text: %s", subtotal_text)
 
-        raise RuntimeError(
-            "Could not find cart subtotal on the cart page. "
-            "Looked for selectors: [data-test-id='SUBTOTAL'], "
-            ".cart-summary-line-item [data-test-id='SUBTOTAL'], "
-            ".val-col.total-row[data-test-id='SUBTOTAL']."
-        )
-
-    def _value_near_label(self, label_pattern: str) -> float | None:
-        containers = self.page.locator(
-            "[data-testid], [data-test-id], [role='row'], [role='listitem'], "
-            "[aria-label], section, div, li"
-        )
-
-        max_checks = min(containers.count(), 150)
-        for idx in range(max_checks):
-            container = containers.nth(idx)
-            if not container.is_visible():
-                continue
-
-            try:
-                text = container.inner_text(timeout=500)
-            except Error:
-                continue
-
-            if not re.search(label_pattern, text, flags=re.IGNORECASE):
-                continue
-
-            parsed = parse_price(text)
+            parsed = parse_price(subtotal_text)
             if parsed is not None:
                 return parsed
 
-        return None
+        raise RuntimeError(
+            "Could not find a parseable cart subtotal value on the cart page."
+        )
 
     def save_cart_screenshot(
         self, path: str = "artifacts/screenshots/cart-total-check.png"
-    ) -> None:
+    ) -> Path:
         screenshot_path = Path(path)
         screenshot_path.parent.mkdir(parents=True, exist_ok=True)
         self.page.screenshot(path=str(screenshot_path), full_page=True)
+
+        logger.info("Saved cart screenshot: %s", screenshot_path)
+
+        return screenshot_path
