@@ -1,14 +1,14 @@
-# eBay UI Automation (Playwright + pytest)
+# eBay UI Automation (Playwright + pytest) - Or Konijn
 
 ## Project overview
-Small end-to-end automation suite for core eBay user flows:
+ automation eBay user flows:
 - sign in
 - advanced search with max-price filtering
 - add items to cart and validate subtotal vs budget
 
 The project uses a lightweight Page Object Model and keeps logic close to where it is used.
 
-## Tech stack
+## Tech
 - Python 3.10+
 - Playwright (sync API)
 - pytest
